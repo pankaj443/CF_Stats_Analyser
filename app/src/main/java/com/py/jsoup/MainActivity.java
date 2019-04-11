@@ -1,5 +1,6 @@
 package com.py.jsoup;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -49,6 +50,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
     private class MyTask extends AsyncTask<Void, Void, String> {
+        private ProgressDialog dialog;
+
+
+        public MyTask() {
+            dialog = new ProgressDialog(MainActivity.this);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            dialog.setMessage("Getting Data, please wait.");
+            dialog.show();
+        }
 
         @Override
         protected String doInBackground(Void... params) {
@@ -87,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
 
                             level = level.replace("#", "");
                             level = level.replaceAll("\\s+", "");
-                            Log.i("MSGNM", level);
 
 
                             switch (level) {
@@ -109,9 +121,7 @@ public class MainActivity extends AppCompatActivity {
                                 case "F":
                                     f++;
                                     break;
-
-
-
+                                    
                             }
                         }
 
@@ -130,6 +140,10 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
+
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
             //if you had a ui element, you could display the title
             ((TextView)findViewById (R.id.textView)).setText (result);
             arrayAdapter = new ArrayAdapter<String>(
